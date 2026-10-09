@@ -13,7 +13,7 @@
     --accent: #f4f4f5;
 
     --card-bg: #fafafa;
-    --hover-bg: #f0f0f0;
+    --hover-bg: #4e4e4e40;
     --active-bg: #e5e5e5;
 
     --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -66,3 +66,35 @@ body {
 }
 
 @import "tailwindcss";
+
+/*Special for playlist hover*/
+.hover-background{
+    height: calc(100% + 30px);
+    width: calc(100% + 20px);
+    top: -10px;
+    left: -10px;
+    z-index: -1;
+}
+.album-item:hover .hover-background{
+    height: calc(100% + 30px);
+    width: calc(100% + 20px);
+    top: -10px;
+    left: -10px;
+    animation-name: song-hover;
+    animation-duration: 0.25s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes song-hover {
+    from {
+        height: 0;
+        width: 0;
+        background-color: #4e4e4e00;
+    }
+
+    to {
+        background-color: #4e4e4e52;
+        height: calc(100% + 30px);
+        width: calc(100% + 20px);
+    }
+}

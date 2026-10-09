@@ -31,7 +31,7 @@ export const MiniPlayer = ({ playerState, track, playing, progress, onTogglePlay
         bg-background-dark
         left-1/2
         -translate-x-1/2
-        border-foreground/30 bg-card-bg p-3">
+        border-foreground/30 bg-card-bg p-3 z-3">
             <div className="flex items-center gap-3">
                 <button
                     {...swipe}
