@@ -1,0 +1,68 @@
+:root {
+    --main: #b82a20;
+    --main-alt: #D96669;
+
+    --background: #ffffff;
+    --foreground: #000000;
+
+    --background-dark: color-mix(in srgb, var(--background), black 50%);
+    --background-light: color-mix(in srgb, var(--background), white 50%);
+
+    --muted: #666666;
+    --border: #e5e5e5;
+    --accent: #f4f4f5;
+
+    --card-bg: #fafafa;
+    --hover-bg: #f0f0f0;
+    --active-bg: #e5e5e5;
+
+    --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #171717;
+        --foreground: #ededed;
+        --muted: #888888;
+        --border: #222222;
+        --accent: #1a1a1a;
+        --card-bg: #0a0a0a;
+        --hover-bg: #111111;
+        --active-bg: #1a1a1a;
+    }
+}
+
+@theme {
+    --color-main: var(--color-main);
+    --color-main-alt: var(--color-main-alt);
+    --animate-fly-in: fly-in 0.35s ease-out both;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-sans);
+    --color-background-dark: var(--background-dark);
+    --color-background-light: var(--background-light);
+    --color-main: var(--main);
+    --color-main-alt: var(--main-alt);
+}
+
+body {
+    background-color: var(--color-background)
+}
+
+@keyframes fly-in {
+    from {
+        opacity: 0;
+        transform: translateX(-2rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@import "tailwindcss";
