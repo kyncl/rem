@@ -7,6 +7,8 @@ import { useShortcuts } from "../hooks/UseShortcuts";
 import { render, Tabs } from "../lib/tabs";
 import { invoke } from "@tauri-apps/api/core";
 import { PlayerActions, PlayerState } from "../lib/playerActions";
+import { createContext } from 'react';
+import { MiniPlayerProps } from "../lib/playerTypes";
 
 const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     id: String(i + 1),
@@ -14,6 +16,15 @@ const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     artist: [`Artist ${i + 1}`],
     cover: import.meta.env.VITE_TESTING_IMG
 }));
+
+export const CurrPlayingContext = createContext<MiniPlayerProps>({
+        playerState: null as unknown as PlayerState,
+        track: null as unknown as Track,
+        playing: false,
+        progress: 0,
+        onTogglePlay: () => {},
+        onSeek: () => {},
+        onExpand: () => {} }); //This will store important data about currently playing song
 
 function App() {
     const [lastTab, setLastTab] = useState<Tabs>("Home");
@@ -124,35 +135,37 @@ function App() {
     });
 
     return (
-        <main className="min-h-screen text-foreground bg-background">
-            <Navbar
-                hasConflicts={hasConflicts}
-                isHome={currentTab === "Home"}
-                onPreviousClick={actions.setPrevious}
-                onConflictsClick={actions.setConflicts}
-                onSettingsClick={actions.setSettings} />
-            {render(currentTab, ALBUMS)}
-            <audio
-                ref={audioRef}
-                src={currentTrack.path}
-                onTimeUpdate={e => {
-                    const t = e.currentTarget.currentTime;
-                    setPlayerState(s => s.setProgress(t));
-                }}
-            />
-            <MiniPlayer
-                playerState={playerState}
-                track={currentTrack}
-                playing={playerState.playing}
-                progress={playerState.progress}
-                onTogglePlay={actions.togglePlay}
-                onSeek={(num) => {
-                    if (audioRef.current) audioRef.current.currentTime = num;
-                    setPlayerState(s => s.setProgress(num));
-                }}
-                onExpand={actions.setSong}
-            />
-        </main>
+        <CurrPlayingContext.Provider value={{
+            playerState: playerState,
+            track: currentTrack,
+            playing: playerState.playing,
+            progress: playerState.progress,
+            onTogglePlay: actions.togglePlay,
+            onSeek: (num:number) => {
+                if (audioRef.current) audioRef.current.currentTime = num;
+                setPlayerState(s => s.setProgress(num));
+            },
+            onExpand: actions.setSong}}>
+
+            <main className="min-h-screen text-foreground bg-background">
+                <Navbar
+                    hasConflicts={hasConflicts}
+                    isHome={currentTab === "Home"}
+                    onPreviousClick={actions.setPrevious}
+                    onConflictsClick={actions.setConflicts}
+                    onSettingsClick={actions.setSettings} />
+                {render(currentTab, ALBUMS)}
+                <audio
+                    ref={audioRef}
+                    src={currentTrack.path}
+                    onTimeUpdate={e => {
+                        const t = e.currentTarget.currentTime;
+                        setPlayerState(s => s.setProgress(t));
+                    }}
+                />
+                <MiniPlayer/>
+            </main>
+        </CurrPlayingContext.Provider>
     );
 }
 
