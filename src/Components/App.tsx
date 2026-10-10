@@ -18,7 +18,7 @@ const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     cover: import.meta.env.VITE_TESTING_IMG
 }));
 
-/*
+/**
     This stores important data about currently playing song. Every component using this context can access these data.
     I bet that this will need a more proper implementation tho.
     On the plus side, both Miniplayer and MainPlayer share resources this way.
