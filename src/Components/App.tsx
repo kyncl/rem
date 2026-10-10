@@ -9,6 +9,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { PlayerActions, PlayerState } from "../lib/playerActions";
 import { createContext } from 'react';
 import { MiniPlayerProps } from "../lib/playerTypes";
+import { miniPlayerBlacklist } from "../lib/miniPlayerBlacklist";
 
 const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     id: String(i + 1),
@@ -17,6 +18,12 @@ const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     cover: import.meta.env.VITE_TESTING_IMG
 }));
 
+/*
+    This stores important data about currently playing song. Every component using this context can access these data.
+    I bet that this will need a more proper implementation tho.
+    On the plus side, both Miniplayer and MainPlayer share resources this way.
+    Here is just declaration, the data will be updated bellow.
+*/
 export const CurrPlayingContext = createContext<MiniPlayerProps>({
         playerState: null as unknown as PlayerState,
         track: null as unknown as Track,
@@ -24,7 +31,7 @@ export const CurrPlayingContext = createContext<MiniPlayerProps>({
         progress: 0,
         onTogglePlay: () => {},
         onSeek: () => {},
-        onExpand: () => {} }); //This will store important data about currently playing song
+        onExpand: () => {} });
 
 function App() {
     const [lastTab, setLastTab] = useState<Tabs>("Home");
@@ -135,7 +142,7 @@ function App() {
     });
 
     return (
-        <CurrPlayingContext.Provider value={{
+        <CurrPlayingContext.Provider value={{ //Behold, the context now has some actual context! Other components can access this data.
             playerState: playerState,
             track: currentTrack,
             playing: playerState.playing,
@@ -163,7 +170,7 @@ function App() {
                         setPlayerState(s => s.setProgress(t));
                     }}
                 />
-                <MiniPlayer/>
+                {miniPlayerBlacklist.includes(currentTab) ? <></> : <MiniPlayer/>}
             </main>
         </CurrPlayingContext.Provider>
     );

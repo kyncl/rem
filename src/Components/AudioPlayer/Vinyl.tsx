@@ -15,10 +15,10 @@ export const Vinyl = ({ spinning, className, track, progress }: VinylProps) => {
         <div className={`relative shrink-0 ${className}`}>
             <div className="relative aspect-square rounded-full border-2 border-foreground/40">
                 <div
-                    className="relative inset-0 animate-[spin_6s_linear_infinite] rounded-full motion-reduce:animate-none"
+                    className="relative inset-0 w-full h-full animate-[spin_6s_linear_infinite] rounded-full motion-reduce:animate-none"
                     style={{ animationPlayState: spinning ? "running" : "paused" }}
                 >
-                    <img src={track?.cover} alt="cover art" className="rounded-full" />
+                    <img src={track?.cover} alt="cover art" className="rounded-full w-full h-full" />
                     <div
                         className="rounded-full z-10 w-full h-full absolute left-0 top-0"
                         style={{
