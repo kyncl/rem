@@ -43,7 +43,7 @@ export const Navbar = ({ hasConflicts = false, isHome = true, onPreviousClick, o
     }, [isHome]);
 
     return (
-        <div className="sticky top-0 flex items-center bg-background-dark py-3 justify-between px-5 mb-9">
+        <div className="sticky z-5 top-0 flex items-center bg-background-dark py-3 justify-between px-5 mb-9">
             {leftBtn}
             <Search searchInMiddle={hasConflicts || !isHome} />
             <button onClick={onSettingsClick} aria-label="Settings" className="group cursor-pointer">

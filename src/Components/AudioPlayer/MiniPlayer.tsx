@@ -2,26 +2,18 @@ import { IoPause, IoPlay } from "react-icons/io5";
 import { Vinyl } from "./Vinyl";
 import { useSwipe } from "../../hooks/UseSwipe";
 import { ProgressBar } from "./Progressbar";
-import { Track } from "../../lib/audioTypes";
 import { MdVolumeDown, MdVolumeOff, MdVolumeUp } from "react-icons/md";
-import { PlayerState } from "../../lib/playerActions";
+import { MiniPlayerProps } from "../../lib/playerTypes";
+import { useContext } from "react";
+import { CurrPlayingContext } from "../App";
 
-type MiniPlayerProps = {
-    playerState: PlayerState,
-    track: Track;
-    playing: boolean;
-    progress: number;
-    onTogglePlay: () => void;
-    onSeek: (seconds: number) => void;
-    onExpand: () => void;
-};
-
-export const MiniPlayer = ({ playerState, track, playing, progress, onTogglePlay, onSeek, onExpand }: MiniPlayerProps) => {
+export const MiniPlayer = () => {
+    const miniPlayerInfo = useContext<MiniPlayerProps>(CurrPlayingContext);
     // Swipe up (or tap) on the vinyl / title area pulls the full player up
-    const swipe = useSwipe({ onUp: onExpand });
-    const audioIcon = playerState.volume >= 0.5 ?
+    const swipe = useSwipe({ onUp: miniPlayerInfo.onExpand });
+    const audioIcon = miniPlayerInfo.playerState.volume >= 0.5 ?
         <MdVolumeUp size={30} /> :
-        playerState.muted || playerState.volume == 0.0 ?
+        miniPlayerInfo.playerState.muted || miniPlayerInfo.playerState.volume == 0.0 ?
             <MdVolumeOff size={30} /> : <MdVolumeDown size={30} />
         ;
 
@@ -35,15 +27,15 @@ export const MiniPlayer = ({ playerState, track, playing, progress, onTogglePlay
             <div className="flex items-center gap-3">
                 <button
                     {...swipe}
-                    onClick={onExpand}
+                    onClick={miniPlayerInfo.onExpand}
                     aria-label="Open player"
                     className="flex min-w-0 flex-1
                     cursor-pointer touch-none items-center gap-3 text-left"
                 >
-                    <Vinyl progress={progress} track={track} spinning={playing} className="w-14" />
+                    <Vinyl progress={miniPlayerInfo.progress} track={miniPlayerInfo.track} spinning={miniPlayerInfo.playing} className="w-14" />
                     <span className="min-w-0">
-                        <span className="block truncate text-lg font-medium leading-tight">{track.title}</span>
-                        <span className="block truncate text-sm text-muted">{track.author}</span>
+                        <span className="block truncate text-lg font-medium leading-tight">{miniPlayerInfo.track.title}</span>
+                        <span className="block truncate text-sm text-muted">{miniPlayerInfo.track.author}</span>
                     </span>
                 </button>
 
@@ -52,16 +44,16 @@ export const MiniPlayer = ({ playerState, track, playing, progress, onTogglePlay
                 </button>
 
                 <button
-                    onClick={onTogglePlay}
-                    aria-label={playing ? "Pause (P)" : "Play (P)"}
-                    title={playing ? "Pause (P)" : "Play (P)"}
+                    onClick={miniPlayerInfo.onTogglePlay}
+                    aria-label={miniPlayerInfo.playing ? "Pause (P)" : "Play (P)"}
+                    title={miniPlayerInfo.playing ? "Pause (P)" : "Play (P)"}
                     className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-foreground/40 transition-colors hover:bg-hover-bg"
                 >
-                    {playing ? <IoPause size={20} /> : <IoPlay size={20} />}
+                    {miniPlayerInfo.playing ? <IoPause size={20} /> : <IoPlay size={20} />}
                 </button>
             </div>
 
-            <ProgressBar current={progress} duration={track.duration ?? 0} onSeek={onSeek} className="mt-3" />
+            <ProgressBar current={miniPlayerInfo.progress} duration={miniPlayerInfo.track.duration ?? 0} onSeek={miniPlayerInfo.onSeek} className="mt-3" />
         </div>
     );
 };
