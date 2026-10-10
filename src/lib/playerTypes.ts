@@ -4,8 +4,6 @@ import { Track } from "./audioTypes";
 export type PlayerInfo = {
     playerState: PlayerState,
     track: Track;
-    playing: boolean;
-    progress: number;
 };
 
 export type MiniPlayerProps = {
