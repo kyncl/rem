@@ -7,6 +7,9 @@ import { useShortcuts } from "../hooks/UseShortcuts";
 import { render, Tabs } from "../lib/tabs";
 import { invoke } from "@tauri-apps/api/core";
 import { PlayerActions, PlayerState } from "../lib/playerActions";
+import { createContext } from 'react';
+import { MiniPlayerProps } from "../lib/playerTypes";
+import { miniPlayerBlacklist } from "../lib/miniPlayerBlacklist";
 
 const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     id: String(i + 1),
@@ -14,6 +17,21 @@ const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     artist: [`Artist ${i + 1}`],
     cover: import.meta.env.VITE_TESTING_IMG
 }));
+
+/**
+    This stores important data about currently playing song. Every component using this context can access these data.
+    I bet that this will need a more proper implementation tho.
+    On the plus side, both Miniplayer and MainPlayer share resources this way.
+    Here is just declaration, the data will be updated bellow.
+*/
+export const CurrPlayingContext = createContext<MiniPlayerProps>({
+        playerState: null as unknown as PlayerState,
+        track: null as unknown as Track,
+        playing: false,
+        progress: 0,
+        onTogglePlay: () => {},
+        onSeek: () => {},
+        onExpand: () => {} });
 
 function App() {
     const [lastTab, setLastTab] = useState<Tabs>("Home");
@@ -124,35 +142,37 @@ function App() {
     });
 
     return (
-        <main className="min-h-screen text-foreground bg-background">
-            <Navbar
-                hasConflicts={hasConflicts}
-                isHome={currentTab === "Home"}
-                onPreviousClick={actions.setPrevious}
-                onConflictsClick={actions.setConflicts}
-                onSettingsClick={actions.setSettings} />
-            {render(currentTab, ALBUMS)}
-            <audio
-                ref={audioRef}
-                src={currentTrack.path}
-                onTimeUpdate={e => {
-                    const t = e.currentTarget.currentTime;
-                    setPlayerState(s => s.setProgress(t));
-                }}
-            />
-            <MiniPlayer
-                playerState={playerState}
-                track={currentTrack}
-                playing={playerState.playing}
-                progress={playerState.progress}
-                onTogglePlay={actions.togglePlay}
-                onSeek={(num) => {
-                    if (audioRef.current) audioRef.current.currentTime = num;
-                    setPlayerState(s => s.setProgress(num));
-                }}
-                onExpand={actions.setSong}
-            />
-        </main>
+        <CurrPlayingContext.Provider value={{ //Behold, the context now has some actual context! Other components can access this data.
+            playerState: playerState,
+            track: currentTrack,
+            playing: playerState.playing,
+            progress: playerState.progress,
+            onTogglePlay: actions.togglePlay,
+            onSeek: (num:number) => {
+                if (audioRef.current) audioRef.current.currentTime = num;
+                setPlayerState(s => s.setProgress(num));
+            },
+            onExpand: actions.setSong}}>
+
+            <main className="min-h-screen text-foreground bg-background">
+                <Navbar
+                    hasConflicts={hasConflicts}
+                    isHome={currentTab === "Home"}
+                    onPreviousClick={actions.setPrevious}
+                    onConflictsClick={actions.setConflicts}
+                    onSettingsClick={actions.setSettings} />
+                {render(currentTab, ALBUMS)}
+                <audio
+                    ref={audioRef}
+                    src={currentTrack.path}
+                    onTimeUpdate={e => {
+                        const t = e.currentTarget.currentTime;
+                        setPlayerState(s => s.setProgress(t));
+                    }}
+                />
+                {miniPlayerBlacklist.includes(currentTab) ? <></> : <MiniPlayer/>}
+            </main>
+        </CurrPlayingContext.Provider>
     );
 }
 
