@@ -2,15 +2,13 @@ import { PlayerState } from "./playerActions";
 import { Track } from "./audioTypes";
 
 export type PlayerInfo = {
-    playerState: PlayerState,
+    playerState: PlayerState;
     track: Track;
 };
 
 export type MiniPlayerProps = {
-    playerState: PlayerState,
+    playerState: PlayerState;
     track: Track;
-    playing: boolean;
-    progress: number;
     onTogglePlay: () => void;
     onSeek: (seconds: number) => void;
     onExpand: () => void;
