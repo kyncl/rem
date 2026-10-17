@@ -14,9 +14,12 @@ type NavbarProps = {
 export const Navbar = ({ hasConflicts = false }: NavbarProps) => {
     const { currentTab } = useTabs();
 
-    const playerInfo = usePlayerInfo();
     const isHome = currentTab.type === "Home";
+    const isSettings = currentTab.type === "Settings";
+
+    const playerInfo = usePlayerInfo();
     const [leftBtn, setLeftBtn] = useState<JSX.Element | null>(null);
+
     useEffect(() => {
         if (!isHome)
             setLeftBtn((
@@ -45,10 +48,10 @@ export const Navbar = ({ hasConflicts = false }: NavbarProps) => {
     }, [isHome, currentTab]);
 
     return (
-        <div className="sticky z-5 top-0 flex items-center bg-background-dark py-3 justify-between px-5 mb-9">
+        <div className="sticky z-50 top-0 flex items-center bg-background-dark py-3 justify-between px-5 mb-9">
             {leftBtn}
             <Search />
-            <button onClick={playerInfo.actions.setSettings} aria-label="Settings" className="group cursor-pointer">
+            <button onClick={isSettings ? playerInfo.actions.setPrevious : playerInfo.actions.setSettings} aria-label="Settings" className="group cursor-pointer">
                 <IoMdSettings
                     size={30}
                     className="transition-transform duration-1000 ease-in-out group-hover:rotate-180"

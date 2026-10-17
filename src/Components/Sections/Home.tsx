@@ -12,8 +12,9 @@ export const Home = ({ albums }: { albums: Album[]; }) => {
                 <AlbumPreview
                     key={album.id}
                     album={album}
+                    className="album-item"
                     onClick={() => withTransition(() => {
-                        playerInfo.actions.setAlbumSection(album)
+                        playerInfo.actions.setAlbumSection(album);
                     }, "Album")}
                 />
             ))}

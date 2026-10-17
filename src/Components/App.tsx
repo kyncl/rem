@@ -14,7 +14,8 @@ import { useTabs } from '../hooks/useTabs';
 const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     id: String(i + 1),
     title: `Album ${i + 1}`,
-    artist: [`Artist ${i + 1}`],
+    artist: [`Artist ${i + 1}`, `Other Artist ${i + 1}`],
+    trackCount: 30,
     cover: import.meta.env.VITE_TESTING_IMG
 }));
 

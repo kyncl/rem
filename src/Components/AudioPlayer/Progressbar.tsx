@@ -1,9 +1,7 @@
 import { CSSProperties } from "react";
 import "../../css/progressBar.css";
 import { useTabs } from '../../hooks/useTabs';
-
-const format = (seconds: number) =>
-    `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
+import { formatDuration } from '../../lib/utils';
 
 type ProgressBarProps = {
     current: number;
@@ -21,7 +19,7 @@ export const ProgressBar = ({ current, duration, onSeek, className = "" }: Progr
         <div className={`flex gap-2 text-[10px]
             ${isSongTab ? "flex-col" : "items-center"}
             tabular-nums text-muted ${className}`}>
-            <span className={isSongTab ? "hidden" : ""}>{format(current)}</span>
+            <span className={isSongTab ? "hidden" : ""}>{formatDuration(current)}</span>
             <input
                 type="range"
                 min={0}
@@ -34,8 +32,8 @@ export const ProgressBar = ({ current, duration, onSeek, className = "" }: Progr
                 className="progress-range flex-1 w-full min-h-2"
             />
             <div className="flex justify-between">
-                <span className={isSongTab ? "" : "hidden"}>{format(current)}</span>
-                <span>{format(duration)}</span>
+                <span className={isSongTab ? "" : "hidden"}>{formatDuration(current)}</span>
+                <span>{formatDuration(duration)}</span>
             </div>
         </div>
     );

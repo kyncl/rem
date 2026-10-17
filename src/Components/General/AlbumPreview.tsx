@@ -6,17 +6,18 @@ interface AlbumPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
     album: Album;
     showTitle?: boolean;
     onClick?: () => void;
+    children?: React.ReactNode;
 }
 
-export const AlbumPreview: React.FC<AlbumPreviewProps> = ({ album, onClick, showTitle = true, ...props }) => {
+export const AlbumPreview: React.FC<AlbumPreviewProps> = ({ album, onClick, children, showTitle = true, ...props }) => {
     const { className } = props;
 
     return (
-        <div {...props} className={cn(className, "album-item min-w-0 relative z-1")}>
-            <div>
+        <div {...props} className={cn(className, "relative z-1")}>
+            <div className="w-full h-full">
                 <button
                     className={cn(
-                        "aspect-square w-full rounded-lg object-cover my-1.75 border border-foreground/30",
+                        "aspect-square w-full rounded-lg object-cover my-1.75 border border-foreground/30 relative",
                         onClick && "cursor-pointer hover:border-main"
                     )}
                     {...vt(`album-cover-${album.id}`, "Album")}
@@ -25,10 +26,11 @@ export const AlbumPreview: React.FC<AlbumPreviewProps> = ({ album, onClick, show
                     <img
                         src={album.cover}
                         alt={`Album cover for ${album.title}`}
-                        className="aspect-square rounded-lg w-full album-cover"
+                        className="rounded-lg w-full h-full album-cover"
                         loading="lazy"
                         decoding="async"
                     />
+                    {children}
                 </button>
                 {showTitle &&
                     <h3
