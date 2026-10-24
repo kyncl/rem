@@ -106,6 +106,7 @@ interface SongListProps extends React.ComponentProps<"div"> {
     menuOptions?: SongListItemMenuOption[];
 
     /**
+     * TODO: Make reordering work
      * In my mind, reordering will happen when a song will be dragged
      * and then just ask to be swapped at an index.
      * Might be more complicated when we get to it tho

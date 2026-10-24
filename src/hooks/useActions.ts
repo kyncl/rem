@@ -43,11 +43,11 @@ export const useActions = (
             const process = async () => {
                 const track: Track | null = await invoke("load_track", { path });
                 setCurrentTrack(track);
-                try {
-                    const img = await invoke<number[]>("get_raw_img", { path });
-                    setCurrentTrack(t => (t ? { ...t, cover: img } : t));
-                }
-                catch { }
+                // try {
+                //     const img = await invoke<number[]>("get_raw_img", { path });
+                //     setCurrentTrack(t => (t ? { ...t, cover: img } : t));
+                // }
+                // catch { }
                 setPlayerState(s => s.pause());
                 if (automatic_start) {
                     setPlayerState(s => s.play());

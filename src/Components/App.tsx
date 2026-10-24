@@ -7,7 +7,8 @@ import { PlayerState } from "../lib/playerActions";
 import { miniPlayerBlacklist } from "../lib/miniPlayerBlacklist";
 import { RenderTabs } from "./RenderTabs";
 import { CurrPlayingContext } from "../lib/contexts/globalContext";
-import { useActions, useBackendListener, useTabs } from '../hooks';
+import { useActions, useTabs } from '../hooks';
+import { useBackendListener } from '../hooks/middleware';
 
 const ALBUMS: Album[] = Array.from({ length: 9 }, (_, i) => ({
     id: String(i + 1),

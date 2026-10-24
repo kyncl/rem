@@ -1,5 +1,6 @@
 import { CSSProperties } from 'react';
 import { cn } from '../../lib/utils';
+import { PLACEHOLDER } from '../../media';
 
 interface VinylDiskProps extends React.ComponentProps<"div"> {
     coverArt?: string;
@@ -38,13 +39,10 @@ export const VinylDisk: React.FC<VinylDiskProps> = ({ coverArt, spinning = false
                 }}
             />
             <div className="absolute inset-[23%] grid place-items-center rounded-full">
-                {coverArt === undefined
-                    ? (<div className="bg-foreground w-full h-full rounded-full" />) // Maybe removing the placeholder bg looks nicer?
-                    : (<div
-                        style={{ backgroundImage: `url(${coverArt})` }}
-                        className="rounded-full w-full h-full bg-cover bg-center"
-                    />)
-                }
+                <div
+                    style={{ backgroundImage: `url(${coverArt ?? PLACEHOLDER})` }}
+                    className="rounded-full w-full h-full bg-cover bg-center"
+                />
                 <div className="size-[12%] rounded-full bg-background z-15 absolute" />
             </div>
         </>

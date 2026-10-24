@@ -9,12 +9,11 @@ export type Album = {
 export type Track = {
     id: string;
     title: string;
-    comment: string;
+    comment: string | null;
     path: string;
     duration: number;
     author: string[];
-    cover?: number[];
-    if_favorite: boolean;
+    isFavorite: boolean;
 
     diskNumber: number;
 };

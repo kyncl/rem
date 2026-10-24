@@ -1,5 +1,7 @@
 import { Album } from '../../lib/types/audioTypes';
 import { cn, vt } from '../../lib/utils';
+import { PLACEHOLDER } from '../../media';
+import { Image } from './Image';
 
 interface AlbumPreviewProps extends React.ComponentProps<"div"> {
     album: Album;
@@ -22,8 +24,9 @@ export const AlbumPreview: React.FC<AlbumPreviewProps> = ({ album, onClick, chil
                     {...vt(`album-cover-${album.id}`, "Album")}
                     onClick={onClick}
                 >
-                    <img
+                    <Image
                         src={album.cover}
+                        altSrc={PLACEHOLDER}
                         alt={`Album cover for ${album.title}`}
                         className="rounded-lg w-full h-full album-cover"
                         loading="lazy"

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Track } from "../../lib/types/audioTypes";
 import { VinylDisk } from './VinylDisk';
+import { useTrackCover } from '../../hooks/middleware';
 
 type VinylProps = { spinning: boolean; className?: string; track: Track | null, progress: number; };
 
@@ -21,29 +22,15 @@ export const Vinyl = ({ spinning, className, track, progress }: VinylProps) => {
         : ARM_REST_ANGLE;
 
     const [angle, setAngle] = useState(targetAngle);
+    const [spinDelay] = useState(() => `-${performance.now() % 6000}ms`);
+    const coverArt = useTrackCover({ trackPath: track?.path ?? '' });
+    const [vinylCanSpin, setVinylCanSpin] = useState<boolean>(false);
 
     useEffect(() => {
         setAngle(prev =>
             Math.abs(targetAngle - prev) > MIN_ANGLE_STEP ? targetAngle : prev
         );
     }, [targetAngle, progress]);
-
-    const [spinDelay] = useState(() => `-${performance.now() % 6000}ms`);
-    const [coverUrl, setCoverUrl] = useState<string | undefined>(undefined);
-
-    useEffect(() => {
-        if (!track || !track.cover) {
-            setCoverUrl(undefined);
-            return;
-        }
-        const url = URL.createObjectURL(
-            new Blob([new Uint8Array(track.cover)], { type: "image/jpeg" })
-        );
-        setCoverUrl(url);
-        return () => URL.revokeObjectURL(url);
-    }, [track, track?.cover]);
-
-    const [vinylCanSpin, setVinylCanSpin] = useState<boolean>(false);
 
     useEffect(() => {
         if (!spinning) {
@@ -60,11 +47,9 @@ export const Vinyl = ({ spinning, className, track, progress }: VinylProps) => {
         };
     }, [spinning]);
 
-    // const vinylCanSpin = spinning && Math.abs(angle - targetAngle) < MIN_ANGLE_STEP;
-
     return (
         <div className={`relative shrink-0 ${className}`}>
-            <VinylDisk coverArt={coverUrl} spinning={vinylCanSpin} spinDelay={spinDelay} id="true" />
+            <VinylDisk coverArt={coverArt.imageUrl} spinning={vinylCanSpin} spinDelay={spinDelay} id="true" />
             <div
                 className="absolute z-1 pointer-events-none"
                 style={{

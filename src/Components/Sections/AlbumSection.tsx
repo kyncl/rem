@@ -1,13 +1,12 @@
-import { invoke } from '@tauri-apps/api/core';
-import { useEffect, useState } from 'react';
 import { MdPlaylistAdd } from 'react-icons/md';
 import { usePlayerInfo } from '../../hooks';
-import { Album, AlbumDisk, Track } from '../../lib/types';
+import { Album, AlbumDisk } from '../../lib/types';
 import { cn, formatDuration, vt } from '../../lib/utils';
 import { VinylDisk } from '../AudioPlayer/VinylDisk';
 import { AlbumPreview } from '../General/AlbumPreview';
 import { CreatorLink } from '../General/ArtistLink';
 import { SongList } from '../General/SongList';
+import { useAllTracks } from '../../hooks/middleware';
 
 interface AlbumSectionProps {
     album: Album;
@@ -22,24 +21,17 @@ interface AlbumSectionProps {
 export const AlbumSection: React.FC<AlbumSectionProps> = ({ album }) => {
     const playerInfo = usePlayerInfo();
 
-    const disks: AlbumDisk[] = new Array(4).fill(0)
-        .map((_, i, disks): AlbumDisk => ({ number: i + 1, trackCount: Math.floor(album.trackCount / disks.length) }));
-    const [debugTracks, setDebugTracks] = useState<Track[]>([]);
-    useEffect(() => {
-        const process = async () => {
-            const d: Track[] = await invoke("get_all_tracks");
-            const songs: Track[] = new Array(d.length).fill(0)
-                .map((_, i) => ({
-                    ...d[i],
-                    author: ["Author 1", "Author 2"],
-                    diskNumber: Math.floor(i / d.length * disks.length) + 1
-                }));
-            setDebugTracks(songs);
-        };
-        process();
-    }, []);
+    // TODO: Use tracks from the actual album
+    const { status, error, tracks } = useAllTracks();
 
-    const totalDurationSeconds = debugTracks.reduce((total, { duration }) => total + duration, 0);
+    // TODO: Use disks from the actual album
+    const disks: AlbumDisk[] = [...new Set(tracks?.map(({ diskNumber }) => diskNumber) ?? [])]
+        .map((diskNumber): AlbumDisk => ({
+            number: diskNumber,
+            trackCount: tracks?.reduce((count, track) => count + (diskNumber === track.diskNumber ? 1 : 0), 0) ?? 0,
+        }));
+
+    const totalDurationSeconds = !tracks ? 0 : tracks.reduce((total, { duration }) => total + duration, 0);
 
     return (
         <div className="bg-background p-3 flex justify-between max-md:flex-col md:flex-row gap-4 relative">
@@ -98,30 +90,37 @@ export const AlbumSection: React.FC<AlbumSectionProps> = ({ album }) => {
                 </div>
                 <p className="text-md pb-2">Short description about the album :P</p>
             </div>
-            <SongList
-                isReorderable
-                songs={debugTracks}
-                onSongClicked={(idx) => {
-                    // Replaced with actual logic
-                    console.log(`Play album id:${album.id} from song id:${debugTracks[idx].id}`);
-                    playerInfo.actions.loadSong(debugTracks[idx].path, true);
-                }}
-                menuOptions={[
-                    {
-                        name: 'Add to...',
-                        icon: MdPlaylistAdd,
-                        onClick: (index: number) => {
-                            console.log(`Add song ${debugTracks[index]} to...`);
-                            console.error('Not implemented yet >:O');
-                        }
-                    },
-                ]}
-                className="w-full md:max-w-1/2 pb-31.25 z-5"
-            /**
-             * 125px is based on the MiniPlayer height and some spacing,
-             * I'm not sure how to have this dynamic
-             */
-            />
+            {status === 'ready'
+                ? (
+                    <SongList
+                        isReorderable
+                        songs={tracks}
+                        onSongClicked={(idx) => {
+                            // Replaced with actual logic
+                            console.log(`Play album id:${album.id} from song id:${tracks[idx].id}`);
+                            playerInfo.actions.loadSong(tracks[idx].path, true);
+                        }}
+                        menuOptions={[
+                            {
+                                name: 'Add to...',
+                                icon: MdPlaylistAdd,
+                                onClick: (index: number) => {
+                                    console.log(`Add song ${tracks[index]} to...`);
+                                    console.error('Not implemented yet >:O');
+                                }
+                            },
+                        ]}
+                        className="w-full md:max-w-1/2 pb-31.25 z-5"
+                    /**
+                     * 125px is based on the MiniPlayer height and some spacing,
+                     * I'm not sure how to have this dynamic
+                     */
+                    />
+                )
+                : (
+                    <p>{error?.message ?? '...'}</p>
+                )
+            }
         </div>
     );
 };

@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { PlayerState } from "../lib/playerActions";
-import { AudioOptions, AudioRealTimeInfo } from '../lib/types';
+import { PlayerState } from "../../lib/playerActions";
+import { AudioOptions, AudioRealTimeInfo } from '../../lib/types';
 
 /**
  * Well it's obvious right? Basically listens to events from backend.
