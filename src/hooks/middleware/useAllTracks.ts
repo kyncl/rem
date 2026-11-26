@@ -19,7 +19,7 @@ export const useAllTracks = () => {
         const process = async () => {
             const rawTracks = (await invoke('get_all_tracks')) as RawTrack[];
 
-            const tracks = rawTracks.map(
+            const tracks = rawTracks.filter((_, i) => i < 20).map(
                 (rawTrack): Track => ({
                     id: rawTrack.id,
                     title: rawTrack.title,

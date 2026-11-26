@@ -5,6 +5,7 @@ import { IoPlay } from 'react-icons/io5';
 import type { Track } from '../../lib/types/audioTypes';
 import { cn } from '../../lib/utils';
 import { CreatorLink } from './ArtistLink';
+import { AutoScrolled } from './AutoScrolled';
 
 interface SongListItemProps {
     listProps: SongListProps;
@@ -51,7 +52,8 @@ const SongListItem: React.FC<SongListItemProps> = ({
                     <IoPlay size={20} />
                 </p>
             </div>
-            <div className='grow flex flex-col min-w-0'>
+
+            <div className='grow flex flex-col items-start min-w-0'>
                 {/* TODO: Truncate should be replaced by scrolling text */}
                 <p className='text-lg truncate'>{song.title}</p>
 
@@ -68,6 +70,7 @@ const SongListItem: React.FC<SongListItemProps> = ({
                     })}
                 </div>
             </div>
+
             {menuOptions.length > 0 && (
                 <div className='aspect-square h-full flex justify-center items-center'>
                     <button

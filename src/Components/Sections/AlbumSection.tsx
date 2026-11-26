@@ -17,7 +17,7 @@ interface AlbumSectionProps {
  * This is the Album view/tab/page/section.
  *
  * Right now album actions buttons are still missing, I'm not sure where to place them nicely
- * to not make it awkward to interact with on mobile with a single hand.
+ * to not make it awkward to interact with on mobile with a single hand.0_song.mp3
  */
 export const AlbumSection: React.FC<AlbumSectionProps> = ({ album }) => {
     const playerInfo = usePlayerInfo();
@@ -139,10 +139,10 @@ export const AlbumSection: React.FC<AlbumSectionProps> = ({ album }) => {
                         },
                     ]}
                     className='w-full md:max-w-1/2 pb-31.25 z-5'
-                    /**
-                     * 125px is based on the MiniPlayer height and some spacing,
-                     * I'm not sure how to have this dynamic
-                     */
+                /**
+                 * 125px is based on the MiniPlayer height and some spacing,
+                 * I'm not sure how to have this dynamic
+                 */
                 />
             )}
 
