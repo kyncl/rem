@@ -5,7 +5,6 @@ import { IoPlay } from 'react-icons/io5';
 import type { Track } from '../../lib/types/audioTypes';
 import { cn } from '../../lib/utils';
 import { CreatorLink } from './ArtistLink';
-import { AutoScrolled } from './AutoScrolled';
 
 interface SongListItemProps {
     listProps: SongListProps;

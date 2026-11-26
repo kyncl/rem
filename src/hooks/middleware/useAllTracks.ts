@@ -19,18 +19,20 @@ export const useAllTracks = () => {
         const process = async () => {
             const rawTracks = (await invoke('get_all_tracks')) as RawTrack[];
 
-            const tracks = rawTracks.filter((_, i) => i < 20).map(
-                (rawTrack): Track => ({
-                    id: rawTrack.id,
-                    title: rawTrack.title,
-                    comment: rawTrack.comment,
-                    duration: rawTrack.duration,
-                    isFavorite: rawTrack.is_favorite,
-                    path: rawTrack.path,
-                    diskNumber: 1, // TODO: Actual disk number, or remove
-                    author: ['Author 1', 'Author 1'], // TODO: Real authors, or remove
-                }),
-            );
+            const tracks = rawTracks
+                .filter((_, i) => i < 20)
+                .map(
+                    (rawTrack): Track => ({
+                        id: rawTrack.id,
+                        title: rawTrack.title,
+                        comment: rawTrack.comment,
+                        duration: rawTrack.duration,
+                        isFavorite: rawTrack.is_favorite,
+                        path: rawTrack.path,
+                        diskNumber: 1, // TODO: Actual disk number, or remove
+                        author: ['Author 1', 'Author 1'], // TODO: Real authors, or remove
+                    }),
+                );
 
             setResponse({
                 status: 'ready',

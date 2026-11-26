@@ -139,10 +139,10 @@ export const AlbumSection: React.FC<AlbumSectionProps> = ({ album }) => {
                         },
                     ]}
                     className='w-full md:max-w-1/2 pb-31.25 z-5'
-                /**
-                 * 125px is based on the MiniPlayer height and some spacing,
-                 * I'm not sure how to have this dynamic
-                 */
+                    /**
+                     * 125px is based on the MiniPlayer height and some spacing,
+                     * I'm not sure how to have this dynamic
+                     */
                 />
             )}
 
