@@ -2,12 +2,13 @@ import { useRef } from 'react';
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     altSrc?: string;
+    alt?: string;
 }
 
 /**
  * Extension of the HTML img component.
  */
-export const Image: React.FC<ImageProps> = ({ altSrc, ...props }) => {
+export const Image: React.FC<ImageProps> = ({ altSrc, alt, ...props }) => {
     const imgRef = useRef<HTMLImageElement | null>(null);
 
     const handleImgError = () => {
@@ -17,11 +18,5 @@ export const Image: React.FC<ImageProps> = ({ altSrc, ...props }) => {
         img.src = altSrc;
     };
 
-    return (
-        <img
-            {...props}
-            ref={imgRef}
-            onError={handleImgError}
-        />
-    );
+    return <img {...props} alt={alt} ref={imgRef} onError={handleImgError} />;
 };

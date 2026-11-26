@@ -17,15 +17,22 @@
 .progress-range::-webkit-slider-runnable-track {
     height: var(--track-h);
     border-radius: 999px;
-    background: linear-gradient(to right,
-            var(--fill) var(--progress), var(--rest) var(--progress));
+    background: linear-gradient(
+        to right,
+        var(--fill) var(--progress),
+        var(--rest) var(--progress)
+    );
     transition: height 0.15s ease;
 }
 
 .progress-range::-moz-range-track {
     height: var(--track-h);
     border-radius: 999px;
-    background: linear-gradient(to right, var(--fill) var(--progress), var(--rest) var(--progress));
+    background: linear-gradient(
+        to right,
+        var(--fill) var(--progress),
+        var(--rest) var(--progress)
+    );
     transition: height 0.15s ease;
 }
 

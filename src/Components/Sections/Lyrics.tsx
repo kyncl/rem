@@ -1,7 +1,3 @@
 export const Lyrics = () => {
-    return (
-        <>
-            Lyrics
-        </>
-    )
-}
+    return <>Lyrics</>;
+};

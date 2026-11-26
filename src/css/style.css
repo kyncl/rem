@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@import "./album.css";
+
 :root {
     --main: #7adce5;
     --main-alt: #c1fbff;
@@ -16,8 +19,10 @@
     --hover-bg: #4e4e4e40;
     --active-bg: #e5e5e5;
 
-    --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    --font-sans:
+        Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        sans-serif;
+    --font-code: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -51,7 +56,7 @@
 }
 
 body {
-    background-color: var(--color-background)
+    background-color: var(--color-background);
 }
 
 @keyframes fly-in {
@@ -65,8 +70,6 @@ body {
         transform: translateX(0);
     }
 }
-
-@import "tailwindcss";
 
 /*Special for playlist hover*/
 .hover-background {
@@ -136,11 +139,9 @@ body {
 
 .vt-active .vinyl-spin,
 .vt-active .vinyl-arm {
-    animation-play-state: paused !important;
-    transition: none !important;
+    animation-play-state: paused;
+    transition: none;
 }
-
-@import "./album.css";
 
 :root {
     view-transition-name: none;

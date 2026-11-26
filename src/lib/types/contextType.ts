@@ -1,5 +1,5 @@
-import { Track } from "./audioTypes";
-import { PlayerActions, PlayerState } from "../playerActions";
+import type { PlayerActions, PlayerState } from '../playerActions';
+import type { Track } from './audioTypes';
 
 // Most likely we will have to separate it into multiple contexes
 // because some values are changed not many times and others, like

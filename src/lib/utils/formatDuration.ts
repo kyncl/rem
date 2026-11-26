@@ -1,11 +1,15 @@
-
 /**
  * Formats seconds to the HH:mm:ss format.
  */
-export const formatDuration = (seconds: number, includeHours: boolean = false, separator: string = ':') => {
+export const formatDuration = (
+    seconds: number,
+    includeHours: boolean = false,
+    separator: string = ':',
+) => {
     if (seconds < 0) seconds = 0;
 
-    const formatRepeating = (value: number) => String(Math.floor(value % 60)).padStart(2, '0');
+    const formatRepeating = (value: number) =>
+        String(Math.floor(value % 60)).padStart(2, '0');
 
     const minutes = seconds / 60.0;
 

@@ -11,9 +11,11 @@
     border-radius: 9999px;
     outline: none;
     cursor: pointer;
-    background: linear-gradient(to right,
-            var(--color-main) var(--fill),
-            rgb(255 255 255 / 0.2) var(--fill));
+    background: linear-gradient(
+        to right,
+        var(--color-main) var(--fill),
+        rgb(255 255 255 / 0.2) var(--fill)
+    );
 }
 
 .volume-slider:focus {
@@ -27,23 +29,31 @@
     height: 14px;
     border-radius: 50%;
     background: currentColor;
-    transition: transform 0.1s, box-shadow 0.1s;
+    transition:
+        transform 0.1s,
+        box-shadow 0.1s;
 }
 
 .volume::-webkit-slider-runnable-track {
     height: var(--track-h);
     border-radius: 999px;
-    background: linear-gradient(to right,
-            var(--fill) var(--progress), var(--rest) var(--progress));
+    background: linear-gradient(
+        to right,
+        var(--fill) var(--progress),
+        var(--rest) var(--progress)
+    );
     transition: height 0.15s ease;
 }
 
 .volume-slider::-moz-range-thumb {
     width: 14px;
     height: 14px;
-    border: none;
     border-radius: 50%;
-    background: linear-gradient(to right, var(--fill) var(--progress), var(--rest) var(--progress));
+    background: linear-gradient(
+        to right,
+        var(--fill) var(--progress),
+        var(--rest) var(--progress)
+    );
     border: 2px solid var(--fill);
 }
 

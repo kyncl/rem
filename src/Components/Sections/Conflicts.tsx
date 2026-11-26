@@ -1,7 +1,3 @@
 export const Conflicts = () => {
-    return (
-        <>
-            Conflicts
-        </>
-    );
-}
+    return <>Conflicts</>;
+};

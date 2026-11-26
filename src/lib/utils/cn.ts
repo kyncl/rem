@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from 'clsx';
+import { type ClassValue, clsx } from 'clsx';
 
 // Allows conditionals and random bullsh*t go in the className attribute.
 
