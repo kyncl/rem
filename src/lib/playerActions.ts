@@ -1,4 +1,4 @@
-import { Album } from './types/audioTypes';
+import type { Album } from './types/audioTypes';
 
 export class PlayerState {
     public readonly playing: boolean = false;
@@ -18,18 +18,38 @@ export class PlayerState {
         return Object.assign(new PlayerState(), this, patch);
     }
 
-    public play() { return this.clone({ playing: true }); }
-    public pause() { return this.clone({ playing: false }); }
-    public togglePlay() { return this.clone({ playing: !this.playing }); }
-    public toggleRepeat() { return this.clone({ repeat: !this.repeat }); }
-    public toggleShuffle() { return this.clone({ shuffle: !this.shuffle }); }
+    public play() {
+        return this.clone({ playing: true });
+    }
+    public pause() {
+        return this.clone({ playing: false });
+    }
+    public togglePlay() {
+        return this.clone({ playing: !this.playing });
+    }
+    public toggleRepeat() {
+        return this.clone({ repeat: !this.repeat });
+    }
+    public toggleShuffle() {
+        return this.clone({ shuffle: !this.shuffle });
+    }
 
-    public mute() { return this.clone({ muted: true }); }
-    public unmute() { return this.clone({ muted: false }); }
-    public toggleMute() { return this.clone({ muted: !this.muted }); }
+    public mute() {
+        return this.clone({ muted: true });
+    }
+    public unmute() {
+        return this.clone({ muted: false });
+    }
+    public toggleMute() {
+        return this.clone({ muted: !this.muted });
+    }
 
-    public showSearch() { return this.clone({ search: true }); }
-    public hideSearch() { return this.clone({ search: false }); }
+    public showSearch() {
+        return this.clone({ search: true });
+    }
+    public hideSearch() {
+        return this.clone({ search: false });
+    }
 
     public setVolume(volume: number) {
         return this.clone({ volume: Math.min(1, Math.max(0, volume)) });

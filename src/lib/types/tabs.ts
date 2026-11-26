@@ -1,4 +1,4 @@
-import { Album } from './audioTypes';
+import type { Album } from './audioTypes';
 
 // These are NOT tab state objects, think of them as recipe for the tab.
 // The type, which has to be in each one, is the main address in the router.
@@ -6,11 +6,11 @@ import { Album } from './audioTypes';
 // needs to know which album it should display.
 
 export interface HomeTab {
-    type: "Home";
+    type: 'Home';
 }
 
 export interface AlbumTab {
-    type: "Album";
+    type: 'Album';
     // This will change to albumId, the whole state of the album
     // should never be sent, this is temporary before DB.
     // Later, each tab will fetch its data from the backend.
@@ -18,26 +18,33 @@ export interface AlbumTab {
 }
 
 export interface SongTab {
-    type: "Song";
+    type: 'Song';
 }
 
 export interface QueueTab {
-    type: "Queue";
+    type: 'Queue';
 }
 
 export interface LyricsTab {
-    type: "Lyrics";
+    type: 'Lyrics';
 }
 
 export interface SettingsTab {
-    type: "Settings";
+    type: 'Settings';
 }
 
 export interface ConflictsTab {
-    type: "Conflicts";
+    type: 'Conflicts';
 }
 
-export type Tab = HomeTab | AlbumTab | SongTab | QueueTab | LyricsTab | SettingsTab | ConflictsTab;
+export type Tab =
+    | HomeTab
+    | AlbumTab
+    | SongTab
+    | QueueTab
+    | LyricsTab
+    | SettingsTab
+    | ConflictsTab;
 
 export type TabType = Tab['type'];
 

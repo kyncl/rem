@@ -1,4 +1,5 @@
-import { flushSync } from "react-dom";
+import { flushSync } from 'react-dom';
+
 /* If you want to nerd about the transition,
  * this comment is just for you.
  * It's quite simple. You put data properties
@@ -9,47 +10,57 @@ import { flushSync } from "react-dom";
  * on the scope. Afterwards the webview does the
  * rest with the calculation. Don't know if
  * it is enough, but hopefully it is :P
-*/
+ */
 
 /** Separator for scope is space,
  *  PLEASE don't add new scopes with spaces
-*   or at least change it
-*/
-type Scope = "Song" | "Album";
+ *   or at least change it
+ */
+type Scope = 'Song' | 'Album';
 
 /** To define the element is used in transition
-* name: name, which should have element in transition (MUST BE UNIQUE IN RENDERED PART)
-* scope: in which scopes/tabs should be used in transition
-* (example: miniplayer is used for transition in Song tab, meaning it will be scope: "Song")
-* What does it do? Basically adds data variables (the name and the scope) and that's it.
-* Yep. That simple
-* */
+ * name: name, which should have element in transition (MUST BE UNIQUE IN RENDERED PART)
+ * scope: in which scopes/tabs should be used in transition
+ * (example: miniplayer is used for transition in Song tab, meaning it will be scope: "Song")
+ * What does it do? Basically adds data variables (the name and the scope) and that's it.
+ * Yep. That simple
+ * */
 export const vt = (name: string, scope: Scope | Scope[]) => ({
-    "data-vt-name": name,
+    'data-vt-name': name,
     // Separator for scope is space bar, PLEASE don't add new
     // scopes with spaces or at least change this
-    "data-vt-scope": Array.isArray(scope) ? scope.join(" ") : scope,
+    'data-vt-scope': Array.isArray(scope) ? scope.join(' ') : scope,
 });
 
-const SELECTOR = "[data-vt-name][data-vt-scope]";
+const SELECTOR = '[data-vt-name][data-vt-scope]';
 let running: ViewTransition | null = null;
 
 const clearNames = () =>
-    document.querySelectorAll<HTMLElement>(SELECTOR).forEach(el => {
-        el.style.viewTransitionName = "";
+    document.querySelectorAll<HTMLElement>(SELECTOR).forEach((el) => {
+        el.style.viewTransitionName = '';
     });
 
 const applyNames = (scope: Scope) => {
     const used = new Set<string>();
 
-    document.querySelectorAll<HTMLElement>(SELECTOR).forEach(el => {
-        if (!el.dataset.vtScope!.split(" ").includes(scope)) return;
+    document.querySelectorAll<HTMLElement>(SELECTOR).forEach((el) => {
+        if (!el.dataset.vtScope?.split(' ').includes(scope)) return;
         if (!el.checkVisibility()) return;
-        const name = el.dataset.vtName!;
+
+        let name = el.dataset.vtName;
+
+        if (!name) {
+            name = 'default-vt-name';
+            console.warn(`[VT] no vtName found using: "${name}"`);
+        }
+
         // Webview is quite freaky, when there's multiple
         // elements with same transition name
         if (used.has(name)) {
-            console.warn(`[VT] duplicate "${name}" in scope "${scope}", skipped`, el);
+            console.warn(
+                `[VT] duplicate "${name}" in scope "${scope}", skipped`,
+                el,
+            );
             return;
         }
         used.add(name);
@@ -61,7 +72,7 @@ export const withTransition = (update: () => void, scope: Scope) => {
     const doc = document as Document & {
         startViewTransition?: (cb: () => void) => ViewTransition;
     };
-    if (!doc.startViewTransition || document.visibilityState === "hidden") {
+    if (!doc.startViewTransition || document.visibilityState === 'hidden') {
         return update();
     }
 
@@ -78,11 +89,13 @@ export const withTransition = (update: () => void, scope: Scope) => {
     });
     running = t;
 
-    t.ready.catch(e => console.warn("[VT] ready failed:", e));
-    t.finished.catch(() => { }).finally(() => {
-        if (running === t) {
-            running = null;
-            clearNames();
-        }
-    });
+    t.ready.catch((e) => console.warn('[VT] ready failed:', e));
+    t.finished
+        .catch(() => {})
+        .finally(() => {
+            if (running === t) {
+                running = null;
+                clearNames();
+            }
+        });
 };

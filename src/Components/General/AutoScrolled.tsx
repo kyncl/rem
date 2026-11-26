@@ -1,4 +1,5 @@
-import React, { cloneElement, useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { cloneElement, useEffect, useRef, useState } from 'react';
 import { cn } from '../../lib/utils';
 
 interface AnimationData {
@@ -7,18 +8,24 @@ interface AnimationData {
     shouldScroll: boolean; // if the inside element is small, no need for scrolling
 }
 
-interface AutoScrolledProps extends React.ComponentProps<"div"> {
-    element: React.ReactElement<React.ComponentPropsWithRef<"div">>; // here I don't know how to make it dynamic, so div will do
+interface AutoScrolledProps extends React.ComponentProps<'div'> {
+    element: React.ReactElement<React.ComponentPropsWithRef<'div'>>; // here I don't know how to make it dynamic, so div will do
 }
 
 const ANIMATION_STEP_MS = 10;
 const SCROLLED_GAP_PX = 16;
 
-export const AutoScrolled: React.FC<AutoScrolledProps> = ({ element, className, ...props }) => {
+export const AutoScrolled: React.FC<AutoScrolledProps> = ({
+    element,
+    className,
+    ...props
+}) => {
     const scrollBoxRef = useRef<HTMLDivElement | null>(null); // references the scroll container
     const elementRef = useRef<HTMLDivElement | null>(null); // references the inside element
 
-    const [animationData, setAnimationData] = useState<AnimationData | null>(null);
+    const [animationData, setAnimationData] = useState<AnimationData | null>(
+        null,
+    );
 
     // Initialize scrolling
     useEffect(() => {
@@ -32,8 +39,7 @@ export const AutoScrolled: React.FC<AutoScrolledProps> = ({ element, className, 
             elementWidth: element.clientWidth,
             shouldScroll: scrollBox.clientWidth < element.clientWidth,
         });
-
-    }, [scrollBoxRef, elementRef, scrollBoxRef.current?.clientWidth]);
+    }, [animationData?.scroll]);
 
     // Animation loop
     useEffect(() => {
@@ -47,7 +53,7 @@ export const AutoScrolled: React.FC<AutoScrolledProps> = ({ element, className, 
             const nextAnimationData: AnimationData = { ...animationData };
 
             // move
-            nextAnimationData.scroll += (moveSpeed * deltaTime);
+            nextAnimationData.scroll += moveSpeed * deltaTime;
 
             const loopOffset = animationData.elementWidth + SCROLLED_GAP_PX;
             if (nextAnimationData.scroll > loopOffset) {
@@ -60,7 +66,7 @@ export const AutoScrolled: React.FC<AutoScrolledProps> = ({ element, className, 
         return () => {
             clearTimeout(loopId);
         };
-    }, [animationData, scrollBoxRef]);
+    }, [animationData]);
 
     // Scroll to target position
     useEffect(() => {
@@ -70,7 +76,7 @@ export const AutoScrolled: React.FC<AutoScrolledProps> = ({ element, className, 
             behavior: 'instant',
             left: animationData.scroll,
         });
-    }, [animationData, scrollBoxRef]);
+    }, [animationData]);
 
     // Clone the scrolled element and make sure its block and text doesn't wrap
     const clonedElm = cloneElement(element, {
@@ -85,7 +91,7 @@ export const AutoScrolled: React.FC<AutoScrolledProps> = ({ element, className, 
                 ref={scrollBoxRef}
                 className={cn(
                     className,
-                    "overflow-scroll scrollbar-none flex justify-center"
+                    'overflow-scroll scrollbar-none flex justify-center',
                 )}
             >
                 {clonedElm}
@@ -97,16 +103,13 @@ export const AutoScrolled: React.FC<AutoScrolledProps> = ({ element, className, 
         <div
             {...props}
             ref={scrollBoxRef}
-            className={cn(
-                className,
-                "overflow-scroll scrollbar-none w-full"
-            )}
+            className={cn(className, 'overflow-scroll scrollbar-none w-full')}
         >
             <div
                 style={{
                     gap: `${SCROLLED_GAP_PX}px`,
                 }}
-                className="text-nowrap flex"
+                className='text-nowrap flex'
             >
                 {clonedElm}
                 {clonedElm}

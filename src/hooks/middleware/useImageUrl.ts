@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-import { BackendResponse } from '../../lib/types/middleware';
+import { useEffect, useState } from 'react';
+import type { BackendResponse } from '../../lib/types/middleware';
 
 interface TrackCover {
     imageUrl?: string;
@@ -15,15 +15,16 @@ interface TrackCoverArgs {
  */
 export const useTrackCover = ({ trackPath: path }: TrackCoverArgs) => {
     const [rawImgData, setRawImgData] = useState<number[] | null>(null);
-    const [response, setResponse] = useState<BackendResponse<TrackCover>>(() => ({ status: 'waiting' }));
+    const [response, setResponse] = useState<BackendResponse<TrackCover>>(
+        () => ({ status: 'waiting' }),
+    );
 
     useEffect(() => {
         const process = async () => {
             try {
-                const data = await invoke<number[]>("get_raw_img", { path });
+                const data = await invoke<number[]>('get_raw_img', { path });
                 setRawImgData(data);
-            }
-            catch {
+            } catch {
                 setResponse({ status: 'ready', imageUrl: undefined });
             }
         };
@@ -34,12 +35,12 @@ export const useTrackCover = ({ trackPath: path }: TrackCoverArgs) => {
         if (rawImgData === null) return;
 
         const url = URL.createObjectURL(
-            new Blob([new Uint8Array(rawImgData)], { type: "image/jpeg" })
+            new Blob([new Uint8Array(rawImgData)], { type: 'image/jpeg' }),
         );
 
         setResponse({
             status: 'ready',
-            imageUrl: url
+            imageUrl: url,
         });
 
         return () => URL.revokeObjectURL(url);

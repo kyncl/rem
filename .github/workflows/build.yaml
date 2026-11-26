@@ -2,104 +2,104 @@ name: build and release
 
 # Only do the release on x.y.z tags.
 on:
-    push:
-        tags:
-            - "[0-9]+.[0-9]+.[0-9]+"
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
-    contents: write
-    id-token: write # for build provenance signing
-    attestations: write # to record the attestation
+  contents: write
+  id-token: write # for build provenance signing
+  attestations: write # to record the attestation
 
 jobs:
-    validate-release:
-        name: validate-release
-        runs-on: "ubuntu-22.04"
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+  validate-release:
+    name: validate-release
+    runs-on: "ubuntu-22.04"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: Get the release version from the tag
-              if: env.VERSION == ''
-              run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      - name: Get the release version from the tag
+        if: env.VERSION == ''
+        run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
 
-            - name: Checks versions
-              shell: bash
-              run: ci/check-versions
+      - name: Checks versions
+        shell: bash
+        run: ci/check-versions
 
-            - name: Install bun
-              uses: oven-sh/setup-bun@v2
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
 
-            - name: Checks frontend
-              shell: bash
-              run: |
-                  bun install
-                  bun tsc
-                  bun vite build
+      - name: Checks frontend
+        shell: bash
+        run: |
+          bun install
+          bun tsc
+          bun vite build
 
-    build-release:
-        name: build-release
-        needs: ["validate-release"]
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - platform: "ubuntu-22.04"
-                      mobile: ""
-                    - platform: "windows-latest"
-                      mobile: ""
-                    - platform: "ubuntu-22.04"
-                      mobile: "android"
-        runs-on: ${{ matrix.platform }}
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+  build-release:
+    name: build-release
+    needs: ["validate-release"]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "ubuntu-22.04"
+            mobile: ""
+          - platform: "windows-latest"
+            mobile: ""
+          - platform: "ubuntu-22.04"
+            mobile: "android"
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: Install bun
-              uses: oven-sh/setup-bun@v2
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
 
-            - name: Install packages (Ubuntu only) # Installs ubuntu packages needed to build
-              if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
-              shell: bash
-              run: ci/ubuntu-install-packages
+      - name: Install packages (Ubuntu only) # Installs ubuntu packages needed to build
+        if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
+        shell: bash
+        run: ci/ubuntu-install-packages
 
-            - name: Set up JDK 17 (Android only) # Installs java
-              if: matrix.mobile == 'android' # This must match mobile value defined above
-              uses: actions/setup-java@v6
-              with:
-                  java-version: "17"
-                  distribution: "temurin"
+      - name: Set up JDK 17 (Android only) # Installs java
+        if: matrix.mobile == 'android' # This must match mobile value defined above
+        uses: actions/setup-java@v6
+        with:
+          java-version: "17"
+          distribution: "temurin"
 
-            - name: Setup Android SDK (Android only) # Installs android SDK
-              if: matrix.mobile == 'android'
-              uses: android-actions/setup-android@v4
+      - name: Setup Android SDK (Android only) # Installs android SDK
+        if: matrix.mobile == 'android'
+        uses: android-actions/setup-android@v4
 
-            - name: Setup frontend
-              shell: bash
-              run: bun install
+      - name: Setup frontend
+        shell: bash
+        run: bun install
 
-            - name: Initialize android (Android only) # Tauri setups android for itself
-              if: matrix.mobile == 'android'
-              shell: bash
-              run: bun tauri android init
+      - name: Initialize android (Android only) # Tauri setups android for itself
+        if: matrix.mobile == 'android'
+        shell: bash
+        run: bun tauri android init
 
-            - name: Setup Android signing (Android only)
-              if: matrix.mobile == 'android'
-              shell: bash
-              run: |
-                  cd src-tauri/gen/android
-                  echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" > keystore.properties
-                  echo "password=${{ secrets.ANDROID_KEY_PASSWORD }}" >> keystore.properties
-                  base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > $RUNNER_TEMP/keystore.jks
-                  echo "storeFile=$RUNNER_TEMP/keystore.jks" >> keystore.properties
+      - name: Setup Android signing (Android only)
+        if: matrix.mobile == 'android'
+        shell: bash
+        run: |
+          cd src-tauri/gen/android
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" > keystore.properties
+          echo "password=${{ secrets.ANDROID_KEY_PASSWORD }}" >> keystore.properties
+          base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > $RUNNER_TEMP/keystore.jks
+          echo "storeFile=$RUNNER_TEMP/keystore.jks" >> keystore.properties
 
-            - name: Build and Release # Tauri builds versions and releases them
-              uses: tauri-apps/tauri-action@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with: # More about arguments: https://github.com/tauri-apps/tauri-action/tree/dev#usage
-                  tagName: v__VERSION__
-                  releaseName: "REM v__VERSION__"
-                  releaseBody: "See the assets to download this version and install."
-                  generateReleaseNotes: true
-                  mobile: ${{ matrix.mobile }}
+      - name: Build and Release # Tauri builds versions and releases them
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with: # More about arguments: https://github.com/tauri-apps/tauri-action/tree/dev#usage
+          tagName: v__VERSION__
+          releaseName: "REM v__VERSION__"
+          releaseBody: "See the assets to download this version and install."
+          generateReleaseNotes: true
+          mobile: ${{ matrix.mobile }}

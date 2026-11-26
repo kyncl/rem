@@ -1,10 +1,12 @@
 To start dev you must run:
+
 ```bash
 bun install
 bun tauri dev
 ```
 
 # Backend orientation
+
 For better understanding, how the Backend works, we
 separate each major functionalities of Backend into multiple
 folders.
@@ -13,30 +15,31 @@ What does the backed do? Here's everything what the Backend
 does and will do:
 
 - **Audio manipulation**: Backend at the start creates new thread
-    with channel sender. This is your main way to request new
-    changes to audio player, like volume, play, pause changes
-    and so on.
+  with channel sender. This is your main way to request new
+  changes to audio player, like volume, play, pause changes
+  and so on.
 - **Audio info emitter (Getting audio values)**: During the run
-    Backend sends every 250ms (this value can be changed during
-    the development) runtime information about the audio or the
-    audio player into Frontend, which can listen to this channel.
+  Backend sends every 250ms (this value can be changed during
+  the development) runtime information about the audio or the
+  audio player into Frontend, which can listen to this channel.
 
-    When new track is loaded, Backend also sends new information
-    about this track. This may change to regular invoke. To
-    be precise the `load_track` invoke could just send also the
-    track.
+  When new track is loaded, Backend also sends new information
+  about this track. This may change to regular invoke. To
+  be precise the `load_track` invoke could just send also the
+  track.
 
-    Currently only way to get audio options is by invoking
-    `get_options`. These values doesn't make sense to send
-    through emitting, because you need to get values
-    from a file on start and afterwards you have the freshest
-    data already in Frontend, because it's the place, where you
-    are setting them.
+  Currently only way to get audio options is by invoking
+  `get_options`. These values doesn't make sense to send
+  through emitting, because you need to get values
+  from a file on start and afterwards you have the freshest
+  data already in Frontend, because it's the place, where you
+  are setting them.
 - **Crawling folder for new files**
 - **DB, Cache and Configuration manipulation**
 
 So it's even more clearer, here's current version of backend folder with comments
 to understand, which part does what:
+
 ```text
 src-tauri/src/              # root folder (I don't know what to say more)
 ├── audio/                  # Folder, where the audio backend lives in.

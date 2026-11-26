@@ -1,6 +1,10 @@
-import { useRef, type PointerEvent } from "react";
+import { type PointerEvent, useRef } from 'react';
 
-type SwipeOptions = { onUp?: () => void; onDown?: () => void; threshold?: number };
+type SwipeOptions = {
+    onUp?: () => void;
+    onDown?: () => void;
+    threshold?: number;
+};
 
 export const useSwipe = ({ onUp, onDown, threshold = 40 }: SwipeOptions) => {
     const startY = useRef<number | null>(null);
